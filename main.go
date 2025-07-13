@@ -2,20 +2,20 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"log"
 	"myProject/config"
+	"myProject/handler"
+	"myProject/router"
+	"myProject/store"
 )
 
 func main() {
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-		return
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, reading from environment variables")
 	}
 
 	dbName, dbPassword, dbUser, dbHost, dbPort, err := config.GetAllFromEnv()
@@ -43,16 +43,16 @@ func main() {
 		return
 	}
 
+	storeSql, err := store.NewDBTable(dbPool)
+	if err != nil {
+		log.Fatalf("cant create tables: %v\n", err)
+	}
+
+	db := &handler.StoreStruct{DB: storeSql.DbPool}
+
 	r := gin.Default()
 
-	r.GET("/", func(c *gin.Context) {
-		_ = fmt.Sprint("Hello World")
-		c.JSON(200, gin.H{"message": "Hello World"})
-	})
-	r.GET("/user", func(c *gin.Context) {
-		_ = fmt.Sprint("Hello ali")
-		c.JSON(200, gin.H{"message": "Hi ali"})
-	})
+	router.Router(r, db)
 
 	err = r.Run(":8080")
 	if err != nil {
