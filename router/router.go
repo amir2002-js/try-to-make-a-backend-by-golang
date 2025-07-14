@@ -17,7 +17,7 @@ func Router(r *gin.Engine, db *handler.StoreStruct) {
 
 	userGroup := r.Group("/user")
 	{
-		userGroup.GET("/", nil)
+		userGroup.POST("/", db.CreateUser)
 	}
 
 	commentGroup := r.Group("/comment")

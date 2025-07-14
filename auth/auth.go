@@ -30,18 +30,18 @@ func Role(username string, email string) string {
 func GenerateJWTTkn(user *models.User) (string, error) {
 	jwtSecret := os.Getenv("JWT_SECRET_KEY")
 	if jwtSecret == "" {
-		return "", errors.New("JWT_SECRET_KEY environment variable not set")
+		return "", errors.New("JWT_SECRET_KEY environment variable not set  -- 33 auth.go")
 	}
 	claims := &jwt.MapClaims{
-		"role":    user.RoleUser,
-		"user_id": user.UserId,
+		"role":    user.Role,
+		"user_id": user.UserID,
 		"exp":     time.Now().Add(time.Hour * 24 * 90).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(jwtSecret))
 	if err != nil {
-		return "", err
+		return "", errors.New("tkn string err  -- 44 auth.go")
 	}
 	return tokenString, nil
 }

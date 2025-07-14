@@ -22,9 +22,9 @@ func CheckUserExist(username string, email string, db *pgxpool.Pool) (bool, erro
 }
 
 func CreateUser(user *models.User, db *pgxpool.Pool) error {
-	q := `INSERT INTO users (username, password_hashed, email, roleUser) VALUES ($1, $2, $3, $4) RETURNING user_id, created_at`
+	q := `INSERT INTO users (username, password_hashed, email, role) VALUES ($1, $2, $3, $4) RETURNING user_id, created_at`
 
-	err := db.QueryRow(context.Background(), q, user.Username, user.PasswordHashed, user.Email, user.RoleUser).Scan(user.UserId, user.CreateAt)
+	err := db.QueryRow(context.Background(), q, user.Username, user.Password, user.Email, user.Role).Scan(&user.UserID, &user.CreatedAt)
 	if err != nil {
 		return err
 	}

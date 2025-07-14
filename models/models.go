@@ -5,12 +5,12 @@ import (
 )
 
 type User struct {
-	Username       string    `json:"username"`
-	PasswordHashed string    `json:"password_hashed"`
-	Email          string    `json:"email"`
-	UserId         int       `json:"user_id"`
-	RoleUser       string    `json:"role"`
-	CreateAt       time.Time `json:"create_at"`
+	UserID    int       `json:"user_id" db:"user_id"`
+	Username  string    `json:"username" db:"username"`
+	Password  string    `json:"-" db:"password_hashed"` // پسورد هرگز در JSON نمی‌آید
+	Email     string    `json:"email" db:"email"`
+	Role      string    `json:"role" db:"role"`
+	CreatedAt time.Time `json:"created_at" db:"created_at"`
 }
 
 type Product struct {
